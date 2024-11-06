@@ -1,0 +1,31 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+    {% if new_page %}
+        {% url 'encyclopedia:new_page' as link %}
+    {% else %}
+        {% url 'encyclopedia:edit_page' as link%}
+    {% endif %}
+    <form action="{{ link }}" method="post">
+        {% csrf_token %}
+        {% if new_page %}
+            <h1>New Page</h1>
+            <div>
+                <input name="title" type="text" placeholder="Page Title" required>
+            </div>
+        {% else %}
+            <h1>Update Page</h1>
+            <input name="title" type="text" value="{{ name }}" style="visibility: hidden;">
+        {% endif %}
+            <div>
+                <textarea name="edit" placeholder="Enter Markdown content here" required>{{ content }}</textarea>
+            </div>
+            <div>
+                <input type="submit">
+            </div>
+    </form>
+{% endblock %}

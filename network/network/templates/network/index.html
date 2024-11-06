@@ -1,0 +1,107 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %} 
+    <div id="csrf_token" style="display: none;">{{ csrf_token }}</div>
+    {% if username %}
+        <!-- Profile page -->
+        <div class="container">
+            <h1 class="mt-3 mb-3">{{ username }}</h1>
+            <p class="text-primary">{{ profile.num_followers }} followers, {{ profile.num_following }} following</p>
+            <form action="{% url 'network:profile' username %}" method="post">
+                {% csrf_token %}
+                {% if is_follower and user.username != username %}
+                    <button type="submit" name="unfollow" value="True" class="btn btn-danger">Unfollow</button>
+                {% elif user.is_authenticated and user.username != username %} 
+                    <button type="submit" name="follow" value="True" class="btn btn-primary">Follow</button>
+                {% endif %}
+            </form>
+        </div>
+    {% elif user.is_authenticated %}
+        <!-- new post form -->
+        <form action="{% url 'network:index' %}" method="post" class="container">
+            {% csrf_token %}
+            <div class="row mt-3 mb-3">
+                <textarea class="form-control form-control-lg" name="content" placeholder="What is happening?!" required></textarea>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary" type="submit">Post</button>
+            </div>
+        </form>
+    {% endif %}
+    <hr class="mt-3 mb-5">
+    <div class="container">
+        <!-- load posts -->
+        {% for post in page %}
+            <div class="card post">
+                <div id="id" style="display: none;">{{ post.id }}</div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'network:profile' post.poster.username %}" class="text-dark">@{{ post.poster }}</a>
+                    </h5>
+                    <div id="content-view-{{ post.id }}">
+                        <p id="content_{{ post.id }}" class="card-text">{{ post.content }}</p>
+                        <p class="card-text text-muted"><span id="numlikes_{{ post.id }}">{{ post.likes }}</span> likes</p>   
+                        {% if post.poster == user %}
+                            <button value="{{ post.id }}" class="btn btn-primary edit">Edit</button>  
+                        {% endif %}  
+                    </div>
+
+                    <!-- edit post -->
+                    {% if user.is_authenticated %}
+                        {% if post.poster == user %}
+                            <div id="edit-view-{{ post.id }}" style="display: none">
+                                <textarea id="textarea_{{ post.id }}" class="form-control form-control-lg mt-3 mb-3">{{ post.content }}</textarea>
+                                <button value="{{ post.id }}" class="btn btn-primary save">Save</button>    
+                            </div>
+                        {% else %}
+                            {% if post.id in liked %}
+                                <div id="liked" style="display: none;">true</div>
+                            {% else %}
+                                <div id="liked" style="display: none;">false</div>
+                            {% endif %}
+                            <!-- like button -->
+                            <div id="like_{{ post.id }}">
+                                <button value="{{ post.id }}" type="button" class="btn btn-muted like">
+                                    <svg value="{{ post.id }}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-heart" viewBox="0 0 16 16">
+                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                    </svg>
+                                </button>    
+                            </div>  
+                            <div id="unlike_{{ post.id }}">
+                                <button value="{{ post.id }}" type="button" class="btn btn-muted unlike">
+                                    <svg value="{{ post.id }}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                    </svg>
+                                </button>    
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <p class="card-footer text-muted">{{ post.timestamp }}</p>    
+            </div>    
+        {% empty %}
+            <h3>No Posts Yet!</h3>
+        {% endfor %}
+    </div>
+    <!-- pagination -->
+    <p class="text-muted d-flex justify-content-center mt-3">Page {{ page.number }} of {{ page.paginator.num_pages }}</p>
+    <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}">Previous</a></li>
+                {% endif %}
+                {% if page.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">Next</a></li>
+                {% endif %}
+            </ul>
+        </nav>    
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}
+

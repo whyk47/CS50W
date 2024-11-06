@@ -1,0 +1,38 @@
+h1 {
+  text-align: center;
+  font-size: 70px;
+}
+
+h6 {
+  text-align: center;
+}
+
+.r {
+  color: #dc442c;
+}
+
+.b {
+  color: #5484f7;
+}
+
+.y {
+  color: #f3bc00;
+}
+
+.g {
+  color: #7dbd7d;
+}
+
+.none {
+  visibility: hidden;
+}
+
+.adv {
+  background-color: #5484f7;
+  color: white;
+  border-width: 1px;
+}
+
+a {
+  text-align: right;
+}/*# sourceMappingURL=styles.css.map */

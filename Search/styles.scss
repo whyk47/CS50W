@@ -1,0 +1,44 @@
+$r: #dc442c;
+$b: #5484f7;
+$y: #f3bc00;
+$g: #7dbd7d;
+
+h1 {
+    text-align: center;
+    font-size: 70px;
+}
+
+h6 {
+    text-align: center;
+}
+
+.r {
+    color: $r;
+}
+
+.b {
+    color: $b;
+}
+
+.y {
+    color: $y;
+}
+
+.g {
+    color: $g;
+}
+
+.none {
+    visibility: hidden;
+}
+
+.adv {
+    background-color: #5484f7;
+    color: white;
+    border-width: 1px;
+}
+
+a {
+    text-align: right;
+}
+
