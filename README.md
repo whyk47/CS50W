@@ -1,5 +1,7 @@
 # CS50W Projects
 
+[Full course outline](https://cs50.harvard.edu/web/2020/)
+
 ### Installation
 1. Clone the repository.
     ```bash
